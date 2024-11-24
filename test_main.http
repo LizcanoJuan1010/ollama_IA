@@ -1,0 +1,28 @@
+### Probar el endpoint de generación solo con texto
+POST http://127.0.0.1:5000/api/generate
+Content-Type: application/json
+
+{
+  "prompt": "Describe un paisaje bogotano."
+}
+
+###
+
+### Probar el endpoint de generación con texto e imagen
+POST http://127.0.0.1:5000/api/generate
+Content-Type: application/json
+
+{
+  "prompt": "Describe el contenido de esta imagen.",
+  "image_path": "C:\Users\legion\PycharmProjects\x\img.jpg"
+}
+
+###
+
+### Probar el endpoint sin proporcionar un prompt
+POST http://127.0.0.1:5000/api/generate
+Content-Type: application/json
+
+{}
+
+###
