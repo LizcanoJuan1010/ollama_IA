@@ -2,7 +2,7 @@ import subprocess
 import base64
 from PIL import Image
 from io import BytesIO
-import subprocess
+
 def preprocess_image(image_path):
     """
     Preprocesa una imagen y la convierte a formato Base64.
@@ -21,28 +21,32 @@ def preprocess_image(image_path):
     except Exception as e:
         raise ValueError(f"Error al procesar la imagen: {str(e)}")
 
-
 def generate_from_model(prompt=None, image_path=None, model="llama3.2-vision:11b"):
-    """
-    Genera una respuesta desde el modelo usando texto.
-    """
     try:
-        if not prompt:
-            raise ValueError("El prompt es obligatorio si no se proporciona una imagen.")
+        if not prompt and not image_path:
+            raise ValueError("Se requiere al menos un prompt o una imagen.")
 
-        # Asegurarse de incluir comillas alrededor del prompt
+        # Construir el comando
         command = ["ollama", "run", model, f'"{prompt}"']
-
-        print(f"Ejecutando comando: {' '.join(command)}")  # Depuración
+        print(f"Ejecutando comando: {' '.join(command)}")  # Log para depuración
 
         # Ejecutar el comando
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            encoding="utf-8"
+        )
 
-        # Manejo de errores en la ejecución
+        # Verificar errores
         if result.returncode != 0:
+            print(f"Error del comando: {result.stderr.strip()}")  # Log del error
             return {"error": result.stderr.strip()}
 
-        # Retornar la salida del modelo
+        # Log para depuración de salida
+        print(f"Salida del modelo: {result.stdout.strip()}")
+
+        # Retornar la salida
         return {"response": result.stdout.strip()}
 
     except FileNotFoundError:
